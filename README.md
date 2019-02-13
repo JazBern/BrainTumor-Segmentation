@@ -10,7 +10,7 @@ BRATS 2017 training dataset has been used for the analysis of the proposed metho
 
 ## Data Preprocessing
 
-1.Intensity Normalization : of NIfTI files in matlab based on https://in.mathworks.com/matlabcentral/fileexchange/38836-intensity-normalization-of-brain-volume .
+1.Intensity Normalization: of NIfTI files in matlab based on https://in.mathworks.com/matlabcentral/fileexchange/38836-intensity-normalization-of-brain-volume .
 
 ```bash
 python3 call_normalize.py
