@@ -1,4 +1,8 @@
-
+"""...........................................................................................
+Dividing the HGG folder containing the .nii.gz files of 3 different modalities  into repective
+folders.
+Also extracts the .nii.gz files to .nii
+"""...........................................................................................
 import os
 import glob
 import gzip
