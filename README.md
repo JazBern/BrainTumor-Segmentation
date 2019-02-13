@@ -1,1 +1,3 @@
 # BrainTumor-Segmentation
+
+# Intensity Normalization
