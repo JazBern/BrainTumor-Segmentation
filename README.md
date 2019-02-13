@@ -6,7 +6,7 @@ Segmentation of tumor regions in brain MRI images using deep learning. A  combin
 
 ## Data Preprocessing
 
-1.Intensity Normalization : of .nii files in matlab based on https://in.mathworks.com/matlabcentral/fileexchange/38836-intensity-normalization-of-brain-volume .
+1.Intensity Normalization : of NIfTI files in matlab based on https://in.mathworks.com/matlabcentral/fileexchange/38836-intensity-normalization-of-brain-volume .
 
 ```bash
 python3 call_normalize.py
