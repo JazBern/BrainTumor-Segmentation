@@ -1,30 +1,19 @@
 # Brain Tumor Segmentation
 
-##Brief Overview
+## Brief Overview
 
 Segmentation of tumor regions in brain MRI images using deep learning. A  combination of U-net and DeepLabV3+ is used to effectively segment the brain tumor regions.
 
 ## Data Preprocessing
 
-1.Intensity Normalization : 
+1.Intensity Normalization : of .nii files in matlab based on https://in.mathworks.com/matlabcentral/fileexchange/38836-intensity-normalization-of-brain-volume .
 
-```bash
-pip install foobar
-```
+call_normalize.py calls the matlab script nyul_hist_normalisation.m
 
-## Usage
+2.Conversion to .png files: The 3D NIfTI files are converted to .png files by slicing along 3 different directions.
+The python utility https://github.com/FNNDSC/med2image is used to convert the .nii MRI scan files to 2d .png files.
 
-```python
-import foobar
 
-foobar.pluralize('word') # returns 'words'
-foobar.pluralize('goose') # returns 'geese'
-foobar.singularize('phenomena') # returns 'phenomenon'
-```
 
-## Contributing
-Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
-
-Please make sure to update tests as appropriate.
 
 
