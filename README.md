@@ -2,7 +2,7 @@
 
 ## Brief Overview
 
-Segmentation of tumor regions in brain MRI images using deep learning. A  combination of U-net and DeepLabV3+ is used to effectively segment the brain tumor regions.
+Segmentation of tumor regions in brain MRI images using deep learning. A combination of U-net and DeepLabV3+ is used to effectively segment the brain tumor regions.
 
 ## Dataset
 
