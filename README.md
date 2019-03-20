@@ -17,7 +17,7 @@ python3 call_normalize.py
 ```
 call_normalize.py calls the matlab script nyul_hist_normalisation.m
 
-2.Conversion to slices: The 3D NIfTI files are converted to slices by first converting the .nii files into a three dimensional arrays. The array corresponding to a nii file is then sliced to get the 2D slices of brain images.
+2.Conversion to slices: The 3D NIfTI files are converted to slices by first converting the .nii files into three dimensional arrays. An array corresponding to a nii file is then sliced to get the 2D slices of brain images.
 
 
 
