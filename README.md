@@ -17,12 +17,10 @@ python3 call_normalize.py
 ```
 call_normalize.py calls the matlab script nyul_hist_normalisation.m
 
-2.Conversion to .png files: The 3D NIfTI files are converted to .png files by slicing along 3 different directions.
-The python utility https://github.com/FNNDSC/med2image is used to convert the .nii MRI scan files to 2d .png files.
+2.Conversion to slices: The 3D NIfTI files are converted to slices by first converting the .nii files into a three dimensional arrays. The array corresponding to a nii file is then sliced to get the 2D slices of brain images.
 
-```bash
-med2image -i input.nii -d OutputDirectory -o OutputFileStem.png -s -1 -r
-```
+
+
 
 
 
