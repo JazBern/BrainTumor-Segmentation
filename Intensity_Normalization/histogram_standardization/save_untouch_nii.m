@@ -55,8 +55,10 @@ function write_nii(nii, filetype, fileprefix)
    hdr = nii.hdr;
 
    if isfield(nii,'ext') & ~isempty(nii.ext)
-      ext = nii.ext;
-      [ext, esize_total] = verify_nii_ext(ext);
+      %disp("Inside error causing function")
+      %ext = nii.ext;
+      %[ext, esize_total] = verify_nii_ext(ext);
+      ext = [];
    else
       ext = [];
    end
