@@ -17,9 +17,17 @@ python3 call_normalize.py
 ```
 call_normalize.py calls the matlab script nyul_hist_normalisation.m
 
-2.Conversion to slices: The 3D NIfTI files are converted to slices by first converting the .nii files into three dimensional arrays. An array corresponding to a nii file is then sliced to get the 2D slices of brain images.
+## Model Arcitecture
+The regular U-Net architecture consists of a contracting path or the encoder which extracts the high-level features, and an expansive path or the decoder, which upsamples the features to create a high-resolution output. We place the ASPP layer consisting of paralel Atrous convolutions at the end of the contracting path. The output of the last layer of contracting path is fed to the ASPP layer. The output of ASPP is concatenated and a 1x1 covolution is applied, followed by Batch Normalisation and ReLu activation. This is then fed as input to the enhancing path of the U-Net. All the concatenating operations between convolutuon layers in U-Net model have been maintained as such.
 
 
+##Tranining
+For training, 2D slices with the four modalities as channels are created from four different types of scans. Each patient will have 155 2D slices with 4 channels.The UNet model is trained on the slices generated.
+
+##Validaton
+Out of 219 patients, the data of 59 patients are used for validation.
+
+The training and evaluation code is in Unet.ipynb
 
 
 
