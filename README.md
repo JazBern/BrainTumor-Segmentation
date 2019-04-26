@@ -6,7 +6,7 @@ Segmentation of tumor regions in brain MRI images using deep learning. A combina
 
 ## Dataset
 
-BRATS 2017 training dataset has been used for the analysis of the proposed methodology. It consists of real patient images as well as synthetic images created by SMIR. Each of these folders are then subdivided into High Grade and Low Grade images. For each patient, four modalities(T1, T1-C, T2 and FLAIR) are provided.
+BRATS 2017 training dataset has been used for the analysis of the proposed methodology. It consists of real patient images as well as synthetic images created by SMIR. Each of these folders are then subdivided into High Grade and Low Grade images. For each patient, four modalities(T1, T1-C, T2 and FLAIR) are provided. Only the HGG data has been used for the project.
 
 ## Data Preprocessing
 
