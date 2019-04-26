@@ -4,6 +4,17 @@
 
 Segmentation of tumor regions in brain MRI images using deep learning. A combination of U-net and DeepLabV3+ is used to effectively segment the brain tumor regions.
 
+## Requirements
+
+Tensorflow<br />
+Keras<br />
+SimpleITK<br />
+Matlab<br />
+Tkinter<br />
+scikit learn<br />
+Numpy<br />
+
+
 ## Dataset
 
 BRATS 2017 training dataset has been used for the analysis of the proposed methodology. It consists of real patient images as well as synthetic images created by SMIR. Each of these folders are then subdivided into High Grade and Low Grade images. For each patient, four modalities(T1, T1-C, T2 and FLAIR) are provided. Only the HGG data has been used for the project.
