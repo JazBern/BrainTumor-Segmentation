@@ -45,7 +45,7 @@ Numpy<br />
 
 
 ## Tranining
-For training, 2D slices with the four modalities as channels are created from four different types of scans. Each patient will have 155 2D slices with 4 channels.The UNet model is trained on the slices generated.
+For training, 2D slices with the four modalities as channels are created from four different types of scans. Each patient will have 155 2D slices with 4 channels. The UNet model is trained on the slices generated.
 
 ## Validaton
 Out of 219 patients, the data of 59 patients are used for validation.
