@@ -24,12 +24,12 @@ The regular U-Net architecture consists of a contracting path or the encoder whi
 ## Requirements
 
 Tensorflow<br />
-Keras
-SimpleITK
-Matlab
-Tkinter
-scikit learn
-Numpy
+Keras<br />
+SimpleITK<br />
+Matlab<br />
+Tkinter<br />
+scikit learn<br />
+Numpy<br />
 
 
 
