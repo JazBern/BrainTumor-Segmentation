@@ -23,7 +23,7 @@ The regular U-Net architecture consists of a contracting path or the encoder whi
 ![alt text](https://github.com/JazBern/BrainTumor-Segmentation/blob/master/archi2%20(1).png)
 ## Requirements
 
-Tensorflow
+Tensorflow<br />
 Keras
 SimpleITK
 Matlab
