@@ -185,8 +185,9 @@ def login_sucess():
 		progress['value']=5
 		login_success_screen.update_idletasks()
 		time.sleep(0.8)
-	
-		m1 = load_model('/home/nimiya/Downloads/unet_jazz_1.h5')
+			
+		m1 = load_model('final.h5')
+		print("Abcd")		
 		q=os.path.basename(name) 
 		with ZipFile(q, 'r') as zip: 
 			zip.extractall('abc') 
@@ -196,9 +197,18 @@ def login_sucess():
 		p.sort(key=str.lower)
 		arr = []
 
+		print("Bcde")
+
 		progress['value']=25
 		login_success_screen.update_idletasks()
 		time.sleep(0.8)
+
+		save = '/content/drive/My Drive/brat/Output/'
+		if os.path.exists(save):
+			shutil.rmtree(save)
+		os.makedirs(save)
+
+		dice_whole = []
 
 		for i in range(len(p)):
 			if(i != 1):
@@ -222,27 +232,43 @@ def login_sucess():
 		login_success_screen.update_idletasks()
 		time.sleep(0.8)
 
-		test = np.zeros((1,240,240,4))
-		test[0] = data[105]
-		pred = m1.predict(test,batch_size = 4)[0]
-		pr = pred.reshape(( 240 ,  240 , 5 ) ).argmax( axis=2)
-		"""for i in range(240):
-			print(pr[i,:])"""
+		Y_labels = Y_labels.reshape((Y_labels.shape[0],Y_labels.shape[1],Y_labels.shape[2],1))
+		y = Y_labels.reshape((-1))
+		class_weights = class_weight.compute_class_weight('balanced', np.unique(y), y)
+		Y_labels = to_categorical(Y_labels,5)
+		for i in range(155):
+			test = np.zeros((1,240,240,4))
+			test[0] = data[i]
+			Y_pred = m2.predict(test)
+			pred = np.argmax(Y_pred, axis=-1)
+			pred = pred.astype(int)
+			y = np.argmax(Y_labels[i])
+			y = y.astype(int)
+			print('calculating dice...')
+			whole_pred = (pred > 0).astype(int)
+			whole_gt = (y > 0).astype(int)
+			dice_whole_batch = dice_coef_np(whole_gt, whole_pred, 5)
+			dice_whole.append(dice_whole_batch)
+			print(dice_whole_batch)
+			colors = [  ( random.randint(0,255),random.randint(0,255),random.randint(0,255) ) for _ in range(5)  ]
+			pr = Y_pred.reshape(( 240 ,  240 , 5 ) ).argmax( axis=2)
+			global seg_img
+			seg_img = np.zeros( ( 240 , 240 , 3  ) )
+			for c in range(5):
+				seg_img[:,:,0] += ( (pr[:,: ] == c )*( colors[c][0] )).astype('uint8')
+				seg_img[:,:,1] += ((pr[:,: ] == c )*( colors[c][1] )).astype('uint8')
+				seg_img[:,:,2] += ((pr[:,: ] == c )*( colors[c][2] )).astype('uint8')
+			seg_img = cv2.resize(seg_img  , (240 , 240 ))
+			k = savefolder + "/" + str(i) + ".png"
+			cv2.imwrite(k , seg_img)
 
+		dice_whole = np.array(dice_whole)
+
+		print('mean dice whole:')
+		print(np.mean(dice_whole, axis=0))
 		progress['value']=75
 		login_success_screen.update_idletasks()
 		time.sleep(0.8)
-
-		colors = [  ( random.randint(0,255),random.randint(0,255),random.randint(0,255) ) for _ in range(5)  ]
-		pr = pred.reshape(( 240 ,  240 , 5 ) ).argmax( axis=2)
-		global seg_img
-		seg_img = np.zeros( ( 240 , 240 , 3  ) )
-		for c in range(5):
-			seg_img[:,:,0] += ( (pr[:,: ] == c )*( colors[c][0] )).astype('uint8')
-			seg_img[:,:,1] += ((pr[:,: ] == c )*( colors[c][1] )).astype('uint8')
-			seg_img[:,:,2] += ((pr[:,: ] == c )*( colors[c][2] )).astype('uint8')
-		seg_img = cv2.resize(seg_img  , (240 , 240 ))
-		cv2.imwrite("outName.png" , seg_img )
 
 		progress['value']=99
 		login_success_screen.update_idletasks()
