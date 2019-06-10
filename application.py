@@ -34,6 +34,8 @@ import random
 from zipfile import ZipFile
 from PIL import Image
 
+os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
+
 # Designing window for registration
 
 def register():
@@ -148,7 +150,7 @@ def login_sucess():
 	frame1 = Frame(login_success_screen, bg='black') 
 	frame2 = Frame(login_success_screen, bg='black') 
 	frame3 = Frame(login_success_screen, bg='black') 
-
+	global name
 	def OpenFile():
 		global name
 		name = askopenfilename(initialdir="/Home",filetypes =(("image File", "*.png"),("All Files","*.*")),title = "Choose a file.")
@@ -185,8 +187,9 @@ def login_sucess():
 		progress['value']=5
 		login_success_screen.update_idletasks()
 		time.sleep(0.8)
-			
-		m1 = load_model('final.h5')
+
+		print("A")
+		m1 = load_model('/home/user/BrainTumor-Segmentation/final.h5')
 		print("Abcd")		
 		q=os.path.basename(name) 
 		with ZipFile(q, 'r') as zip: 
@@ -203,7 +206,7 @@ def login_sucess():
 		login_success_screen.update_idletasks()
 		time.sleep(0.8)
 
-		save = '/content/drive/My Drive/brat/Output/'
+		save = '/home/user/BrainTumor-Segmentation/Output/'
 		if os.path.exists(save):
 			shutil.rmtree(save)
 		os.makedirs(save)
