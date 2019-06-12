@@ -1,6 +1,5 @@
 
-#import modules
-
+#import modules-----------------------------------------------------------------------------------------
 from tkinter import *
 from tkinter import ttk
 import tkinter as tk
@@ -30,20 +29,46 @@ from keras.models import model_from_json,load_model
 from keras.preprocessing.image import ImageDataGenerator
 from keras.callbacks import  ModelCheckpoint,Callback,LearningRateScheduler
 import cv2
-import random
+import random, shutil
 from zipfile import ZipFile
 from PIL import Image
+import matplotlib.pyplot as plt
+#--------------------------------------------------------------------------------------------------------
 
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
 
-# Designing window for registration
+#--------------------------------------------------------------------------------------------------------
 
+#-------------------Dice score calculation---------------------------------------------------------------
+def dice_coef_np(y_true, y_pred, num_classes, smooth = 0.4):
+    """
+    :param y_true: sparse labels
+    :param y_pred: sparse labels
+    :param num_classes: number of classes
+    :return:
+    """
+    y_true = y_true.astype(int)
+    y_pred = y_pred.astype(int)
+    y_true = y_true.flatten()
+    y_true = one_hot(y_true, num_classes)
+    y_pred = y_pred.flatten()
+    y_pred = one_hot(y_pred, num_classes)
+    intersection = np.sum(y_true * y_pred, axis=0)
+    return (2. * intersection + smooth) / (np.sum(y_true, axis=0) + np.sum(y_pred, axis=0) + smooth)
+  
+  
+def one_hot(y, num_classees):
+    y_ = np.zeros([len(y), num_classees])
+    y_[np.arange(len(y)), y] = 1
+    return y_
+#-------------------------------------------------------------------------------------------------------
+
+#------------------ Designing window for registration---------------------------------------------------
 def register():
 	global register_screen
 	register_screen = Toplevel(main_screen)
 	register_screen.title("Register")
 	register_screen.geometry("300x250")
-	#register_screen.configure(background = 'black')
 
 	global username
 	global password
@@ -64,10 +89,9 @@ def register():
 	password_entry.pack()
 	Label(register_screen, text="").pack()
 	Button(register_screen, text="Register", width=10, height=1, bg="black", fg="white", command = register_user).pack()
+#---------------------------------------------------------------------------------------------------------
 
-
-# Designing window for login 
-
+# -------------------Designing window for login-----------------------------------------------------------
 def login():
 	global login_screen
 	login_screen = Toplevel(main_screen)
@@ -94,9 +118,9 @@ def login():
 	password_login_entry.pack()
 	Label(login_screen, text="").pack()
 	Button(login_screen, text="Login", width=10, height=1, command = login_verify).pack()
+#----------------------------------------------------------------------------------------------------------
 
-# Implementing event on register button
-
+#------------------ Implementing event on register button--------------------------------------------------
 def register_user():
 
 	username_info = username.get()
@@ -112,10 +136,9 @@ def register_user():
 
 	Label(register_screen, text="Registration Success", fg="green", font=("calibri", 11)).pack()
 	register_screen.destroy
-	
+#---------------------------------------------------------------------------------------------------------	
 
-# Implementing event on login button 
-
+#----------------- Implementing event on login button-----------------------------------------------------
 def login_verify():
 	username1 = username_verify.get()
 	password1 = password_verify.get()
@@ -134,9 +157,9 @@ def login_verify():
 
 	else:
 		user_not_found()
+#---------------------------------------------------------------------------------------------------------
 
-# Designing popup for login success
-
+#-------------------Designing popup for login success-----------------------------------------------------
 def login_sucess():
 	global login_success_screen
 	login_success_screen = Toplevel(login_screen)
@@ -155,9 +178,8 @@ def login_sucess():
 		global name
 		name = askopenfilename(initialdir="/Home",filetypes =(("image File", "*.png"),("All Files","*.*")),title = "Choose a file.")
 		v.set(name)
-
+	
 	def uploading():
-
 		if name != "":
 			popup = tk.Toplevel()
 			tk.Label(popup, text="uploading").grid(row=0,column=0)
@@ -177,7 +199,8 @@ def login_sucess():
 			login_success_screen.update_idletasks()
 			time.sleep(0.8)
 			popup.destroy()
-	
+
+	#The given input file is segmented using the model trained using Unet deeplabV3+ architecture and is saved into a folder.
 	def predicting():
 		popup = tk.Toplevel()
 		tk.Label(popup, text="processing").grid(row=0,column=0)
@@ -188,19 +211,17 @@ def login_sucess():
 		login_success_screen.update_idletasks()
 		time.sleep(0.8)
 
-		print("A")
-		m1 = load_model('/home/user/BrainTumor-Segmentation/final.h5')
-		print("Abcd")		
-		q=os.path.basename(name) 
-		with ZipFile(q, 'r') as zip: 
-			zip.extractall('abc') 
+		m2 = load_model('/home/user/BrainTumor-Segmentation/final.h5')
+		if os.path.exists("abc/"):
+			shutil.rmtree("abc/")
+		with ZipFile(name, 'r') as zipf: 
+			zipf.extractall('abc') 
 			f=os.listdir('abc')
 		path = "abc/" + f[0]
+
 		p = os.listdir(path)
 		p.sort(key=str.lower)
 		arr = []
-
-		print("Bcde")
 
 		progress['value']=25
 		login_success_screen.update_idletasks()
@@ -211,7 +232,17 @@ def login_sucess():
 			shutil.rmtree(save)
 		os.makedirs(save)
 
+		destin = '/home/user/BrainTumor-Segmentation/Output_Segmented/'
+		if os.path.exists(destin):
+			shutil.rmtree(destin)
+		os.makedirs(destin)
+
 		dice_whole = []
+
+		in_img = '/home/user/BrainTumor-Segmentation/Data/Plots/'
+		if os.path.exists(in_img):
+			shutil.rmtree(in_img)
+		os.makedirs(in_img)
 
 		for i in range(len(p)):
 			if(i != 1):
@@ -231,6 +262,11 @@ def login_sucess():
 			data[i,:,:,3] = arr[3][i,:,:]
 		info = []
 
+		for i in range(155):
+			img = data[i, :, :, 2]
+			indata = in_img + str(i) + ".png"
+			plt.imsave(indata, img,cmap='gray')
+
 		progress['value']=50
 		login_success_screen.update_idletasks()
 		time.sleep(0.8)
@@ -239,21 +275,25 @@ def login_sucess():
 		y = Y_labels.reshape((-1))
 		class_weights = class_weight.compute_class_weight('balanced', np.unique(y), y)
 		Y_labels = to_categorical(Y_labels,5)
+		n = 0
+		dicescore1 = 0
+		dicescore2 = 0
+		dicescore3 = 0
+		dicescore4 = 0
+		dicescore5 = 0
 		for i in range(155):
 			test = np.zeros((1,240,240,4))
 			test[0] = data[i]
 			Y_pred = m2.predict(test)
-			pred = np.argmax(Y_pred, axis=-1)
-			pred = pred.astype(int)
-			y = np.argmax(Y_labels[i])
-			y = y.astype(int)
-			print('calculating dice...')
-			whole_pred = (pred > 0).astype(int)
-			whole_gt = (y > 0).astype(int)
-			dice_whole_batch = dice_coef_np(whole_gt, whole_pred, 5)
-			dice_whole.append(dice_whole_batch)
-			print(dice_whole_batch)
-			colors = [  ( random.randint(0,255),random.randint(0,255),random.randint(0,255) ) for _ in range(5)  ]
+			l = dice_coef_np(Y_labels[i], Y_pred, 5)
+			n = n+1
+			dicescore1 = dicescore1 + l[0]
+			dicescore2 = dicescore2 + l[1]
+			dicescore3 = dicescore3 + l[2]
+			dicescore4 = dicescore4 + l[3]
+			dicescore5 = dicescore5 + l[4]
+			print(l)
+			colors=[(255,255,255),(255,0,0),(0,255,0),(0,0,255),(169,169,169)]
 			pr = Y_pred.reshape(( 240 ,  240 , 5 ) ).argmax( axis=2)
 			global seg_img
 			seg_img = np.zeros( ( 240 , 240 , 3  ) )
@@ -261,14 +301,21 @@ def login_sucess():
 				seg_img[:,:,0] += ( (pr[:,: ] == c )*( colors[c][0] )).astype('uint8')
 				seg_img[:,:,1] += ((pr[:,: ] == c )*( colors[c][1] )).astype('uint8')
 				seg_img[:,:,2] += ((pr[:,: ] == c )*( colors[c][2] )).astype('uint8')
-			seg_img = cv2.resize(seg_img  , (240 , 240 ))
-			k = savefolder + "/" + str(i) + ".png"
+			#seg_img = cv2.resize(seg_img  , (240 , 240 ))
+			k = save + "/" + str(i) + ".png"
 			cv2.imwrite(k , seg_img)
 
-		dice_whole = np.array(dice_whole)
+		print((dicescore1 + dicescore2 + dicescore3) / (3*n))
 
-		print('mean dice whole:')
-		print(np.mean(dice_whole, axis=0))
+		for i in range(155):
+			path1 = '/home/user/BrainTumor-Segmentation/Data/Plots/' + str(i) +'.png'
+			path2 = '/home/user/BrainTumor-Segmentation/Output/' + str(i) +'.png'
+			img1 = cv2.imread(path1)
+			img2 = cv2.imread(path2)
+			dst = cv2.addWeighted(img1,0.8,img2,0.5,0)
+			destination = "/home/user/BrainTumor-Segmentation/Output_Segmented/"+str(i) + ".png"
+			cv2.imwrite(destination, dst)
+
 		progress['value']=75
 		login_success_screen.update_idletasks()
 		time.sleep(0.8)
@@ -302,9 +349,6 @@ def login_sucess():
 	analysis = Button(frame2, text = 'Start analysis!', width = 20, height = 2,command=predicting)
 	analysis.grid(row=1, column=0, pady = 10, sticky =N)
 
-	"""download = Button(frame2, text="view result",width=20,height=2,command=view)
-	download.grid(row=2, column=0, pady = 10, sticky =N)"""
-
 	frame2.pack()
 
 	def callback(event):
@@ -321,10 +365,9 @@ def login_sucess():
 	frame3.pack()
 
 	login_success_screen.mainloop()
+#---------------------------------------------------------------------------------------------------
 
-
-# Designing popup for login invalid password
-
+#------------------ Designing popup for login invalid password -------------------------------------
 def password_not_recognised():
 	global password_not_recog_screen
 	password_not_recog_screen = Toplevel(login_screen)
@@ -332,9 +375,9 @@ def password_not_recognised():
 	password_not_recog_screen.geometry("150x100")
 	Label(password_not_recog_screen, text="Invalid Password ").pack()
 	Button(password_not_recog_screen, text="OK", command=delete_password_not_recognised).pack()
+#---------------------------------------------------------------------------------------------------
 
-# Designing popup for user not found
- 
+#------------------ Designing popup for user not found --------------------------------------------- 
 def user_not_found():
 	global user_not_found_screen
 	user_not_found_screen = Toplevel(login_screen)
@@ -342,9 +385,9 @@ def user_not_found():
 	user_not_found_screen.geometry("150x100")
 	Label(user_not_found_screen, text="User Not Found").pack()
 	Button(user_not_found_screen, text="OK", command=delete_user_not_found_screen).pack()
+#---------------------------------------------------------------------------------------------------
 
-# Deleting popups
-
+#----------------- Deleting popups -----------------------------------------------------------------
 def delete_login_success():
 	login_success_screen.destroy()
 
@@ -355,10 +398,9 @@ def delete_password_not_recognised():
 
 def delete_user_not_found_screen():
 	user_not_found_screen.destroy()
+#----------------------------------------------------------------------------------------------------
 
-
-# Designing Main(first) window
-
+#---------------- Designing Main(first) window -------------------------------------------------------
 def main_account_screen():
 	global main_screen
 	main_screen = Tk()
